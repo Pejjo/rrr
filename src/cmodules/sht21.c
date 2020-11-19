@@ -87,6 +87,8 @@ int i2c_write_read(int i2c_fd, uint8_t addr, uint8_t *wr_dta, uint8_t wr_len, ui
     struct i2c_msg msgs[2];
     struct i2c_rdwr_ioctl_data msgset[1];
 
+    memset(msgs, 0, sizeof(msgs));
+    memset(msgs, 0, sizeof(msgset));
     msgs[0].addr = addr;
     msgs[0].flags = 0;
     msgs[0].len = wr_len;
@@ -110,11 +112,12 @@ int i2c_write_read(int i2c_fd, uint8_t addr, uint8_t *wr_dta, uint8_t wr_len, ui
 int get_serial(int i2c_fd, uint8_t *id)
 {
 	uint8_t tx_dta[2];
-	uint8_t rx_dta[8]={0};
+	uint8_t rx_dta[8];
 	int ret;
 
 	tx_dta[0] = READ_SNB_CMD0;
 	tx_dta[1] = READ_SNB_CMD1;
+	memset(rx_dta, 0, 8);
 	ret = i2c_write_read(i2c_fd, config_data.device_addr, tx_dta, 2, rx_dta, 8);
 	if (ret < 0)
 		goto out;
